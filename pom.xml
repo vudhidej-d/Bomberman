@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.thms</groupId>
-    <artifactId>BombermanClient</artifactId>
+    <artifactId>Bomberman</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -24,6 +24,11 @@
             <groupId>com.github.almasb</groupId>
             <artifactId>fxgl</artifactId>
             <version>0.3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thms</groupId>
+            <artifactId>Bomberman</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

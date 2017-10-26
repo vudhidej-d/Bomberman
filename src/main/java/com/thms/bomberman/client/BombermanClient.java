@@ -1,7 +1,6 @@
-package com.thms.bomberman;
+package com.thms.bomberman.client;
 
 import com.almasb.fxgl.app.ApplicationMode;
-import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.math.FXGLMath;
 import com.almasb.fxgl.ecs.Entity;
@@ -13,9 +12,8 @@ import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.parser.text.TextLevelParser;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.settings.GameSettings;
-import com.thms.bomberman.controllers.PlayerController;
+import com.thms.bomberman.client.controllers.PlayerController;
 import javafx.scene.input.KeyCode;
-import javafx.util.Duration;
 
 public class BombermanClient extends GameApplication {
 

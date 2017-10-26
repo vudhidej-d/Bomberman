@@ -1,12 +1,12 @@
-package com.thms.bomberman.controllers;
+package com.thms.bomberman.client.controllers;
 
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.ecs.Control;
 import com.almasb.fxgl.ecs.Entity;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.component.BoundingBoxComponent;
-import com.thms.bomberman.BombermanClient;
-import com.thms.bomberman.BombermanType;
+import com.thms.bomberman.client.BombermanClient;
+import com.thms.bomberman.client.BombermanType;
 
 public class BombController extends Control {
     private int radius;

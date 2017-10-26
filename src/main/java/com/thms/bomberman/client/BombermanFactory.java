@@ -1,12 +1,12 @@
-package com.thms.bomberman;
+package com.thms.bomberman.client;
 
 import com.almasb.fxgl.annotation.SetEntityFactory;
 import com.almasb.fxgl.annotation.SpawnSymbol;
 import com.almasb.fxgl.annotation.Spawns;
 import com.almasb.fxgl.entity.*;
 import com.almasb.fxgl.entity.component.CollidableComponent;
-import com.thms.bomberman.controllers.BombController;
-import com.thms.bomberman.controllers.PlayerController;
+import com.thms.bomberman.client.controllers.BombController;
+import com.thms.bomberman.client.controllers.PlayerController;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;

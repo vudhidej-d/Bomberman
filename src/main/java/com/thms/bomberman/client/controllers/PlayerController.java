@@ -1,4 +1,4 @@
-package com.thms.bomberman.controllers;
+package com.thms.bomberman.client.controllers;
 
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.ecs.Control;
@@ -6,8 +6,8 @@ import com.almasb.fxgl.ecs.Entity;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.component.PositionComponent;
 import com.almasb.fxgl.entity.component.TypeComponent;
-import com.thms.bomberman.BombermanClient;
-import com.thms.bomberman.BombermanType;
+import com.thms.bomberman.client.BombermanClient;
+import com.thms.bomberman.client.BombermanType;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
@@ -66,7 +66,6 @@ public class PlayerController extends Control {
 
     private boolean canMove(Point2D direction) {
         Point2D newPosition = position.getValue().add(direction);
-
         return FXGL.getApp()
                 .getGameScene()
                 .getViewport()
