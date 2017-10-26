@@ -1,0 +1,131 @@
+07:06:18.119 [JavaFX Application Thread] DEBUG GameApplication      - Logger initialized
+07:06:18.363 [JavaFX Application Thread] DEBUG GameApplication      - Starting FXGL
+07:06:18.363 [JavaFX Application Thread] INFO  Version              - FXGL-0.3.9
+07:06:18.364 [JavaFX Application Thread] INFO  Version              - Source code and latest versions at: https://github.com/AlmasB/FXGL
+07:06:18.364 [JavaFX Application Thread] INFO  Version              -              Join the FXGL chat at: https://gitter.im/AlmasB/FXGL
+07:06:18.397 [FXGL Launcher Thread     ] DEBUG FXGL                 - Loading FXGL system data
+07:06:18.403 [FXGL Launcher Thread     ] DEBUG IOTask               - Executing task: readDataTask(system/fxgl.bundle)
+07:06:18.408 [FXGL Launcher Thread     ] DEBUG FS                   - Reading from: system\fxgl.bundle
+07:06:18.417 [FXGL Launcher Thread     ] DEBUG IOTask               - Task succeeded: readDataTask(system/fxgl.bundle)
+07:06:18.418 [FXGL Launcher Thread     ] DEBUG Bundle               - Logging bundle: FXGL
+07:06:18.419 [FXGL Launcher Thread     ] DEBUG Bundle               - FXGL.offline.timer.version.check=2017-10-24T22:48:57
+07:06:18.419 [FXGL Launcher Thread     ] DEBUG GameApplication      - FXGL configuration complete
+07:06:18.422 [FXGL Launcher Thread     ] INFO  GameApplication      - FXGL configuration took:  0.054 sec
+07:06:18.422 [FXGL Launcher Thread     ] DEBUG GameApplication      - Logging game settings
+Title: Bomberman
+Version: 0.1
+Width: 750
+Height: 650
+Fullscreen: false
+Intro: false
+Menus: false
+Profiling: false
+App Mode: DEVELOPER
+Menu Key: ESCAPE
+Scene Factory: class com.almasb.fxgl.scene.SceneFactory
+Dialog Factory: class com.almasb.fxgl.service.impl.display.FXGLDialogFactory
+UI Factory: class com.almasb.fxgl.service.impl.ui.FXGLUIFactory
+Notification Service: class com.almasb.fxgl.service.impl.notification.FXGLNotificationService
+Exception Handler: class com.almasb.fxgl.app.FXGLExceptionHandler
+07:06:18.426 [FXGL Launcher Thread     ] DEBUG GameApplication      - Configuring GameApplication
+07:06:18.431 [FXGL Launcher Thread     ] DEBUG AppStateMachine      - Initializing application states
+07:06:18.439 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Asset cacheSize=35
+07:06:18.440 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/ui/cursors/fxgl_default.png
+07:06:18.463 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/ui/cursors/fxgl_default.png
+07:06:18.476 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/sounds/core/notification.wav
+07:06:18.503 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/sounds/menu/select.wav
+07:06:18.505 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/sounds/menu/back.wav
+07:06:18.507 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/sounds/menu/press.wav
+07:06:18.510 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/ui/fonts/Copperplate_Gothic_Light_Regular.ttf
+07:06:18.704 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/ui/fonts/lucida_console.ttf
+07:06:18.715 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/ui/css/fxgl_dark.css
+07:06:18.715 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/ui/icons/fxgl_icon.png
+07:06:18.739 [FXGL Launcher Thread     ] DEBUG AssetLoader          - Loading from disk: /assets/ui/cursors/fxgl_default.png
+07:06:18.760 [FXGL Launcher Thread     ] DEBUG FXGL.GameScene       - Game scene initialized: 750x650
+07:06:18.766 [FXGL Launcher Thread     ] DEBUG FXGL.GameWorld       - Game world initialized
+07:06:18.817 [FXGL Launcher Thread     ] DEBUG FXGL.PhysicsWorld    - Physics world initialized: appHeight=650, physics.ppm=50.0
+07:06:18.839 [FXGL Launcher Thread     ] DEBUG Input                - Registered new binding: Pause - Esc
+07:06:18.857 [FXGL Launcher Thread     ] INFO  GameApplication      - Game configuration took:  0.429 sec
+07:06:18.859 [JavaFX Application Thread] DEBUG MainWindow           - Target size: 750.0 x 650.0 @ 1.0
+07:06:18.859 [JavaFX Application Thread] DEBUG MainWindow           - New size:    750.0 x 650.0 @ 1.0
+07:06:18.859 [JavaFX Application Thread] DEBUG MainWindow           - Opening main window
+07:06:18.899 [JavaFX Application Thread] DEBUG MainWindow           - Root size:  750.0x650.0
+07:06:18.899 [JavaFX Application Thread] DEBUG MainWindow           - Scene size: 750.0x650.0
+07:06:18.899 [JavaFX Application Thread] DEBUG MainWindow           - Stage size: 756.0x685.0
+07:06:18.899 [JavaFX Application Thread] DEBUG GameApplication      - Running preInit()
+07:06:18.900 [JavaFX Application Thread] DEBUG Input                - Registered new binding: Screenshot - P
+07:06:18.901 [JavaFX Application Thread] DEBUG Input                - Registered new binding: Dev Options - CTRL+0
+07:06:18.901 [JavaFX Application Thread] DEBUG Input                - Registered new binding: Move Right - D
+07:06:18.901 [JavaFX Application Thread] DEBUG Input                - Registered new binding: Move Left - A
+07:06:18.901 [JavaFX Application Thread] DEBUG Input                - Registered new binding: Move Up - W
+07:06:18.901 [JavaFX Application Thread] DEBUG Input                - Registered new binding: Move Down - S
+07:06:18.901 [JavaFX Application Thread] DEBUG Input                - Registered new binding: Place Bomb - Space
+07:06:18.937 [JavaFX Application Thread] DEBUG GameApplication      - Starting main loop
+07:06:18.940 [JavaFX Application Thread] DEBUG StartupState         - STARTUP
+07:06:18.941 [JavaFX Application Thread] DEBUG GameApplication      - Starting new game
+07:06:18.941 [JavaFX Application Thread] DEBUG Input                - Clearing active input actions
+07:06:18.941 [JavaFX Application Thread] DEBUG AppStateMachine      - StartupState -> LoadingState
+07:06:19.088 [JavaFX Application Thread] DEBUG AnnotationParser     - @AddCollisionHandler: []
+07:06:19.088 [JavaFX Application Thread] DEBUG AnnotationParser     - @SetEntityFactory: [BombermanFactory]
+07:06:19.093 [FXGL Background Thread 1 ] DEBUG InitAppTask          - Clearing previous game
+07:06:19.093 [FXGL Background Thread 1 ] DEBUG FXGL.GameWorld       - Clearing game world
+07:06:19.093 [FXGL Background Thread 1 ] DEBUG FXGL.PhysicsWorld    - Clearing physics world
+07:06:19.094 [FXGL Background Thread 1 ] DEBUG FXGL.GameScene       - Clearing game scene
+07:06:19.094 [FXGL Background Thread 1 ] DEBUG InitAppTask          - Initializing Assets
+07:06:19.095 [FXGL Background Thread 1 ] DEBUG InitAppTask          - Initializing Game
+07:06:19.115 [FXGL Background Thread 1 ] DEBUG AssetLoader          - Loading from disk: /assets/text/levels/0.txt
+07:06:19.154 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.154 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.155 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.161 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.161 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.161 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.162 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.163 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.164 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.164 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.165 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.166 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.166 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.168 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.176 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.185 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.193 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.194 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.195 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.196 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.197 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.201 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.212 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.217 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.218 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.219 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.219 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.220 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.221 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.221 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.222 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.223 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.223 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.223 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.225 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.226 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.226 [FXGL Background Thread 1 ] WARN  FXGL.TextLevelParser - No producer found for character: 0
+07:06:19.231 [FXGL Background Thread 1 ] DEBUG FXGL.GameWorld       - Clearing removable entities
+07:06:19.232 [FXGL Background Thread 1 ] DEBUG FXGL.GameWorld       - Setting level: com.almasb.fxgl.gameplay.Level@48620c2c
+07:06:19.236 [FXGL Background Thread 1 ] DEBUG FXGL.GameScene       - Creating render group for layer: TOP(2147483647)
+07:06:19.257 [FXGL Background Thread 1 ] DEBUG FXGL.GameScene       - Creating render group for layer: BACKGROUND(1000)
+07:06:19.260 [FXGL Background Thread 1 ] DEBUG InitAppTask          - Initializing Physics
+07:06:19.261 [FXGL Background Thread 1 ] DEBUG InitAppTask          - Initializing UI
+07:06:19.262 [FXGL Background Thread 1 ] DEBUG InitAppTask          - Initialization Complete
+07:06:19.262 [FXGL Background Thread 1 ] INFO  InitAppTask          - Game initialization took: 0.169 sec
+07:06:19.263 [JavaFX Application Thread] DEBUG Input                - Clearing active input actions
+07:06:19.263 [JavaFX Application Thread] DEBUG AppStateMachine      - LoadingState -> PlayState
+07:07:07.391 [JavaFX Application Thread] DEBUG GameApplication      - Exiting game application
+07:07:07.392 [JavaFX Application Thread] DEBUG GameApplication      - Shutting down background threads
+07:07:07.393 [JavaFX Application Thread] DEBUG GameApplication      - Exiting FXGL
+07:07:07.393 [JavaFX Application Thread] DEBUG FXGL                 - Saving FXGL system data
+07:07:07.394 [JavaFX Application Thread] DEBUG IOTask               - Executing task: writeDataTask(system/fxgl.bundle)
+07:07:07.397 [JavaFX Application Thread] DEBUG FS                   - Writing to: system\fxgl.bundle
+07:07:07.401 [JavaFX Application Thread] DEBUG IOTask               - Task succeeded: writeDataTask(system/fxgl.bundle)
+07:07:07.401 [JavaFX Application Thread] DEBUG GameApplication      - Closing logger and exiting JavaFX
