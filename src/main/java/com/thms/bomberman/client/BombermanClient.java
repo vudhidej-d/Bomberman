@@ -39,6 +39,7 @@ public class BombermanClient extends GameApplication {
 
     @Override
     protected void initGame() {
+        initNetwork();
         TextLevelParser levelParser = new TextLevelParser(getGameWorld().getEntityFactory());
 
         Level level = levelParser.parse("levels/0.txt");
@@ -108,6 +109,11 @@ public class BombermanClient extends GameApplication {
 
             getGameWorld().spawn("PowerUp", (x*BombermanClient.TILE_SIZE)+5, (y*BombermanClient.TILE_SIZE)+5);
         }
+    }
+
+    protected void initNetwork() {
+        Client client = new Client("localhost", 13000);
+        client.connect();
     }
 
     public static void main(String[] args) {

@@ -70,6 +70,7 @@ public class BombermanFactory implements TextEntityFactory {
                 .type(BombermanType.BRICK)
                 .from(data)
                 .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.ORANGE))
+//                .viewFromTexture("brick.jpg")
                 .build();
     }
 

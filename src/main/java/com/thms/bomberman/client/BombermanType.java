@@ -1,5 +1,5 @@
 package com.thms.bomberman.client;
 
 public enum BombermanType {
-    PLAYER, WALL, BRICK, BOMB, POWERUP
+    PLAYER, PLAYER1, PLAYER2, PLAYER3, PLAYER4, WALL, BRICK, BOMB, POWERUP
 }
