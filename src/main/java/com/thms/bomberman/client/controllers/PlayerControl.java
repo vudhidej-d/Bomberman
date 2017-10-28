@@ -11,8 +11,7 @@ import com.thms.bomberman.client.BombermanType;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
-public class PlayerController extends Control {
-
+public class PlayerControl extends Control {
     private PositionComponent position;
     private int maxBombs = 1;
     private int bombsPlaced = 0;
@@ -39,7 +38,7 @@ public class PlayerController extends Control {
                         .put("radius", BombermanClient.TILE_SIZE / 2));
 
         FXGL.getMasterTimer().runOnceAfter(() -> {
-            bomb.getControl(BombController.class).explode();
+            bomb.getControl(BombControl.class).explode();
             bombsPlaced--;
         }, Duration.seconds(2));
     }
@@ -82,7 +81,11 @@ public class PlayerController extends Control {
                         .map(e -> e.getComponent(TypeComponent.class))
                         .filter(type -> type.isType(BombermanType.BRICK)
                                 || type.isType(BombermanType.WALL)
-                                || type.isType(BombermanType.BOMB))
+                                || type.isType(BombermanType.BOMB)
+                                || type.isType(BombermanType.PLAYER1)
+                                || type.isType(BombermanType.PLAYER2)
+                                || type.isType(BombermanType.PLAYER3)
+                                || type.isType(BombermanType.PLAYER4))
                         .count() == 0;
     }
 }

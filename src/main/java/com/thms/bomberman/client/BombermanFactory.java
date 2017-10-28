@@ -5,8 +5,8 @@ import com.almasb.fxgl.annotation.SpawnSymbol;
 import com.almasb.fxgl.annotation.Spawns;
 import com.almasb.fxgl.entity.*;
 import com.almasb.fxgl.entity.component.CollidableComponent;
-import com.thms.bomberman.client.controllers.BombController;
-import com.thms.bomberman.client.controllers.PlayerController;
+import com.thms.bomberman.client.controllers.BombControl;
+import com.thms.bomberman.client.controllers.PlayerControl;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -23,15 +23,47 @@ public class BombermanFactory implements TextEntityFactory {
                 .build();
     }
 
-    @Spawns("Player")
-    public GameEntity createPlayer(SpawnData data) {
+    @Spawns("Player1")
+    public GameEntity createPlayer1(SpawnData data) {
         return Entities.builder()
-                .type(BombermanType.PLAYER)
-                .at(50, 50)
-                //.from(data)
+                .type(BombermanType.PLAYER1)
+                .from(data)
                 .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.DARKBLUE))
                 .with(new CollidableComponent(true))
-                .with(new PlayerController())
+                .with(new PlayerControl())
+                .build();
+    }
+
+    @Spawns("Player2")
+    public GameEntity createPlayer2(SpawnData data) {
+        return Entities.builder()
+                .type(BombermanType.PLAYER2)
+                .from(data)
+                .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.DARKMAGENTA))
+                .with(new CollidableComponent(true))
+                .with(new PlayerControl())
+                .build();
+    }
+
+    @Spawns("Player3")
+    public GameEntity createPlayer3(SpawnData data) {
+        return Entities.builder()
+                .type(BombermanType.PLAYER3)
+                .from(data)
+                .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.BROWN))
+                .with(new CollidableComponent(true))
+                .with(new PlayerControl())
+                .build();
+    }
+
+    @Spawns("Player4")
+    public GameEntity createPlayer4(SpawnData data) {
+        return Entities.builder()
+                .type(BombermanType.PLAYER4)
+                .from(data)
+                .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.DARKRED))
+                .with(new CollidableComponent(true))
+                .with(new PlayerControl())
                 .build();
     }
 
@@ -41,7 +73,7 @@ public class BombermanFactory implements TextEntityFactory {
                 .type(BombermanType.BOMB)
                 .from(data)
                 .viewFromNodeWithBBox(new Circle(blockWidth()/2, Color.BLACK))
-                .with(new BombController(data.get("radius")))
+                .with(new BombControl(data.get("radius")))
                 .build();
     }
 
@@ -52,6 +84,16 @@ public class BombermanFactory implements TextEntityFactory {
                 .from(data)
                 .viewFromNodeWithBBox(new Circle((blockWidth()/2)-5, Color.YELLOW))
                 .with(new CollidableComponent(true))
+                .build();
+    }
+
+    @Spawns("Explosion")
+    public GameEntity createExplosion(SpawnData data) {
+        return Entities.builder()
+                .type(BombermanType.EXPLOSION)
+                .from(data)
+                .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.LIGHTYELLOW))
+                .with(new CollidableComponent())
                 .build();
     }
 
@@ -70,7 +112,6 @@ public class BombermanFactory implements TextEntityFactory {
                 .type(BombermanType.BRICK)
                 .from(data)
                 .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.ORANGE))
-//                .viewFromTexture("brick.jpg")
                 .build();
     }
 

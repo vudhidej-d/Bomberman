@@ -12,14 +12,22 @@ import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.parser.text.TextLevelParser;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.settings.GameSettings;
-import com.thms.bomberman.client.controllers.PlayerController;
+import com.thms.bomberman.client.controllers.PlayerControl;
+import com.thms.bomberman.server.ServerMessage;
 import javafx.scene.input.KeyCode;
 
 public class BombermanClient extends GameApplication {
-
     public static final int TILE_SIZE = 50;
     public static final int GAME_WIDTH = 750;
     public static final int GAME_HEIGHT = 650;
+    private Client client;
+
+    private BombermanType clientOwner = BombermanType.PLAYER1;
+    private GameEntity player1, player2, player3, player4;
+    private PlayerControl player1Control, player2Control, player3Control, player4Control;
+    private PlayerControl playerControl;
+
+    private BombermanType playerPowerUp = clientOwner;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -34,9 +42,6 @@ public class BombermanClient extends GameApplication {
         settings.setApplicationMode(ApplicationMode.DEVELOPER);
     }
 
-    private GameEntity player;
-    private PlayerController playerController;
-
     @Override
     protected void initGame() {
         initNetwork();
@@ -47,73 +52,262 @@ public class BombermanClient extends GameApplication {
         getGameWorld().setLevel(level);
         getGameWorld().spawn("BG");
 
-        player = (GameEntity) getGameWorld().spawn("Player");
-        playerController = player.getControl(PlayerController.class);
+        player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+        player1Control = player1.getControl(PlayerControl.class);
+
+        player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+        player2Control = player2.getControl(PlayerControl.class);
+
+        player3 = (GameEntity) getGameWorld().spawn("Player3", 50, 550);
+        player3Control = player3.getControl(PlayerControl.class);
+
+        player4 = (GameEntity) getGameWorld().spawn("Player4", 650, 550);
+        player4Control = player4.getControl(PlayerControl.class);
+
+        switch (clientOwner) {
+            case PLAYER1:
+                playerControl = player1Control;
+                break;
+            case PLAYER2:
+                playerControl = player2Control;
+                break;
+            case PLAYER3:
+                playerControl = player3Control;
+                break;
+            case PLAYER4:
+                playerControl = player4Control;
+                break;
+        }
     }
 
     @Override
     protected void initInput() {
         Input input = getInput();
 
-        input.addAction(new UserAction("Move Right") {
+        input.addAction(new UserAction("Move_Right") {
             @Override
             protected void onActionBegin() {
-                playerController.moveRight();
+                client.send(new ClientMessage(ClientMessageType.MOVE_RIGHT, clientOwner,
+                        "MoveRightPacket"));
             }
-        }, KeyCode.D);
+        }, KeyCode.RIGHT);
 
-        input.addAction(new UserAction("Move Left") {
+        input.addAction(new UserAction("Move_Left") {
             @Override
             protected void onActionBegin() {
-                playerController.moveLeft();
+                client.send(new ClientMessage(ClientMessageType.MOVE_LEFT, clientOwner,
+                        "MoveLeftPacket"));
             }
-        }, KeyCode.A);
+        }, KeyCode.LEFT);
 
-        input.addAction(new UserAction("Move Up") {
+        input.addAction(new UserAction("Move_Up") {
             @Override
             protected void onActionBegin() {
-                playerController.moveUp();
+                client.send(new ClientMessage(ClientMessageType.MOVE_UP, clientOwner,
+                        "MoveUpPacket"));
             }
-        }, KeyCode.W);
+        }, KeyCode.UP);
 
-        input.addAction(new UserAction("Move Down") {
+        input.addAction(new UserAction("Move_Down") {
             @Override
             protected void onActionBegin() {
-                playerController.moveDown();
+                client.send(new ClientMessage(ClientMessageType.MOVE_DOWN, clientOwner,
+                        "MoveDownPacket"));
             }
-        }, KeyCode.S);
+        }, KeyCode.DOWN);
 
-        input.addAction(new UserAction("Place Bomb") {
+        input.addAction(new UserAction("Place_Bomb") {
             @Override
             protected void onActionBegin() {
-                playerController.placeBomb();
+                client.send(new ClientMessage(ClientMessageType.PLACE_BOMB, clientOwner,
+                        "PlaceBombPacket"));
             }
         }, KeyCode.SPACE);
     }
 
     @Override
     protected void initPhysics() {
-        getPhysicsWorld().addCollisionHandler(new CollisionHandler(BombermanType.PLAYER, BombermanType.POWERUP) {
+        getPhysicsWorld().addCollisionHandler(new CollisionHandler(clientOwner, BombermanType.POWERUP) {
             @Override
             protected void onCollision(Entity pl, Entity powerup) {
+                client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "POWERUP"));
                 powerup.removeFromWorld();
-                playerController.increaseMaxBombs();
             }
         });
     }
 
-    public void onWallDestroyed(Entity wall) {
-        if (FXGLMath.randomBoolean()) {
-            int x = Entities.getPosition(wall).getGridX(TILE_SIZE);
-            int y = Entities.getPosition(wall).getGridY(TILE_SIZE);
-
+    public void onBrickDestroyed(Entity brick) {
+        int random = FXGLMath.random(1, 100);
+        if (random <= 40) {
+            int x = Entities.getPosition(brick).getGridX(TILE_SIZE);
+            int y = Entities.getPosition(brick).getGridY(TILE_SIZE);
             getGameWorld().spawn("PowerUp", (x*BombermanClient.TILE_SIZE)+5, (y*BombermanClient.TILE_SIZE)+5);
         }
     }
 
     protected void initNetwork() {
-        Client client = new Client("localhost", 13000);
+        client = new Client("localhost", 13000);
         client.connect();
+    }
+
+    @Override
+    protected void onUpdate(double tpf) {
+        if (!client.updateQueue.isEmpty()) {
+            System.out.println("Client has an update...");
+            ServerMessage updateMessage = client.updateQueue.poll();
+
+            switch (updateMessage.getHeader()) {
+                case CONNECTING:
+                    break;
+
+                case MOVE_RIGHT:
+                    switch (updateMessage.getPacketOwner()) {
+                        case PLAYER1:
+                            System.out.println("Player1 is moving right...");
+                            player1Control.moveRight();
+                            break;
+                        case PLAYER2:
+                            System.out.println("Player2 is moving right...");
+                            player2Control.moveRight();
+                            break;
+                        case PLAYER3:
+                            System.out.println("Player3 is moving right...");
+                            player3Control.moveRight();
+                            break;
+                        case PLAYER4:
+                            System.out.println("Player4 is moving right...");
+                            player4Control.moveRight();
+                            break;
+                    }
+                    break;
+
+                case MOVE_LEFT:
+                    switch (updateMessage.getPacketOwner()) {
+                        case PLAYER1:
+                            System.out.println("Player1 is moving left...");
+                            player1Control.moveLeft();
+                            break;
+                        case PLAYER2:
+                            System.out.println("Player2 is moving left...");
+                            player2Control.moveLeft();
+                            break;
+                        case PLAYER3:
+                            System.out.println("Player3 is moving left...");
+                            player3Control.moveLeft();
+                            break;
+                        case PLAYER4:
+                            System.out.println("Player4 is moving left...");
+                            player4Control.moveLeft();
+                            break;
+                    }
+                    break;
+
+                case MOVE_UP:
+                    switch (updateMessage.getPacketOwner()) {
+                        case PLAYER1:
+                            System.out.println("Player1 is moving up...");
+                            player1Control.moveUp();
+                            break;
+                        case PLAYER2:
+                            System.out.println("Player2 is moving up...");
+                            player2Control.moveUp();
+                            break;
+                        case PLAYER3:
+                            System.out.println("Player3 is moving up...");
+                            player3Control.moveUp();
+                            break;
+                        case PLAYER4:
+                            System.out.println("Player4 is moving up...");
+                            player4Control.moveUp();
+                            break;
+                    }
+                    break;
+
+                case MOVE_DOWN:
+                    switch (updateMessage.getPacketOwner()) {
+                        case PLAYER1:
+                            System.out.println("Player1 is moving down...");
+                            player1Control.moveDown();
+                            break;
+                        case PLAYER2:
+                            System.out.println("Player2 is moving down...");
+                            player2Control.moveDown();
+                            break;
+                        case PLAYER3:
+                            System.out.println("Player3 is moving down...");
+                            player3Control.moveDown();
+                            break;
+                        case PLAYER4:
+                            System.out.println("Player4 is moving down...");
+                            player4Control.moveDown();
+                            break;
+                    }
+                    break;
+
+                case PLACE_BOMB:
+                    switch (updateMessage.getPacketOwner()) {
+                        case PLAYER1:
+                            System.out.println("Player1 is placing bomb...");
+                            player1Control.placeBomb();
+                            break;
+                        case PLAYER2:
+                            System.out.println("Player2 is placing bomb...");
+                            player2Control.placeBomb();
+                            break;
+                        case PLAYER3:
+                            System.out.println("Player3 is placing bomb...");
+                            player3Control.placeBomb();
+                            break;
+                        case PLAYER4:
+                            System.out.println("Player4 is placing bomb...");
+                            player4Control.placeBomb();
+                            break;
+                    }
+                    break;
+
+                case POWERUP:
+                    switch (updateMessage.getPacketOwner()) {
+                        case PLAYER1:
+//                            playerPowerUp = BombermanType.PLAYER1;
+                            setPowerUpPhysic(BombermanType.PLAYER1);
+                            player1Control.increaseMaxBombs();
+                            break;
+                        case PLAYER2:
+                            setPowerUpPhysic(BombermanType.PLAYER2);
+//                            playerPowerUp = BombermanType.PLAYER2;
+                            player2Control.increaseMaxBombs();
+                            break;
+                        case PLAYER3:
+                            setPowerUpPhysic(BombermanType.PLAYER3);
+//                            playerPowerUp = BombermanType.PLAYER3;
+                            player3Control.increaseMaxBombs();
+                            break;
+                        case PLAYER4:
+                            setPowerUpPhysic(BombermanType.PLAYER4);
+//                            playerPowerUp = BombermanType.PLAYER4;
+                            player4Control.increaseMaxBombs();
+                            break;
+                    }
+                    break;
+            }
+//            getPhysicsWorld().addCollisionHandler(new CollisionHandler(playerPowerUp, BombermanType.POWERUP) {
+//                @Override
+//                protected void onCollision(Entity pl, Entity powerup) {
+//                    client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "POWERUP"));
+//                    powerup.removeFromWorld();
+//                }
+//            });
+        }
+    }
+
+    public void setPowerUpPhysic(BombermanType playerPowerup) {
+        getPhysicsWorld().addCollisionHandler(new CollisionHandler(playerPowerup, BombermanType.POWERUP) {
+            @Override
+            protected void onCollision(Entity pl, Entity powerup) {
+                client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "POWERUP"));
+                powerup.removeFromWorld();
+            }
+        });
     }
 
     public static void main(String[] args) {

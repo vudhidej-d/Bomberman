@@ -1,6 +1,6 @@
 package com.thms.bomberman.server;
 
-import com.thms.bomberman.client.DataMessage;
+import com.thms.bomberman.client.ClientMessage;
 
 import java.io.*;
 import java.net.DatagramPacket;
@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Server {
-
     private int port;
     private Thread listenThread;
     private boolean listening = false;
@@ -22,6 +21,9 @@ public class Server {
     private byte[] sendedDataBuffer = new byte[MAX_PACKET_SIZE*10];
 
     private Set<ServerClient> clients = new HashSet<ServerClient>();
+
+    ServerMessage message;
+    String lastAction;
 
     public Server(int port) {
         this.port = port;
@@ -35,7 +37,7 @@ public class Server {
             return;
         }
 
-        System.out.println("Started server on port 13000...");
+        System.out.println("Started server on port "+port+"...");
 
         listening = true;
 
@@ -45,7 +47,7 @@ public class Server {
 
     private void listen() {
         while (listening) {
-            System.out.println("Listening...");
+            System.out.println("\nListening...");
             DatagramPacket packet = new DatagramPacket(receivedDataBuffer, MAX_PACKET_SIZE);
             try {
                 socket.receive(packet);
@@ -57,14 +59,9 @@ public class Server {
     }
 
     private void process(DatagramPacket packet) {
-        InetAddress address = packet.getAddress();
-        int port = packet.getPort();
-        System.out.println("-----------------------------");
-        System.out.println("IP: "+address.getHostAddress());
-        System.out.println("Port: "+port);
-
         ByteArrayInputStream byteIS = new ByteArrayInputStream(packet.getData());
         Object receivedObj = null;
+
         try {
             ObjectInputStream objIS = new ObjectInputStream(byteIS);
             try {
@@ -76,25 +73,76 @@ public class Server {
             e.printStackTrace();
         }
 
-        if (receivedObj instanceof String) {
-            String s = (String) receivedObj;
-            System.out.println(s);
-        }
+        if (receivedObj instanceof ClientMessage) {
+            ClientMessage receivedMessage = (ClientMessage) receivedObj;
 
-        if (receivedObj instanceof DataMessage) {
-            DataMessage data = (DataMessage) receivedObj;
-            System.out.println("Contents: "+data);
-            System.out.println("-----------------------------");
-            clients.add(new ServerClient(address, port));
-            for (ServerClient client : clients) {
-                System.out.println(client);
+            switch (receivedMessage.getHeader()) {
+                case CONNECTING:
+                    InetAddress address = packet.getAddress();
+                    int port = packet.getPort();
+                    lastAction = "Connect...";
+                    clients.add(new ServerClient(address, port));
+                    System.out.println("==============================");
+                    System.out.println("------------------------------");
+                    System.out.println("########Client Connect########");
+                    System.out.println("------------------------------");
+                    for (ServerClient client : clients) {
+                        System.out.println("-> "+client.getAddress().getHostAddress()+":"+client.getPort());
+                    }
+                    System.out.println("------------------------------");
+                    System.out.println("Client connected: "+clients.size());
+                    System.out.println("==============================");
+                    break;
+
+                case MOVE_RIGHT:
+                    message = new ServerMessage(ServerMessageType.MOVE_RIGHT,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
+                    lastAction = receivedMessage.getPacketOwner()+" move right...";
+                    break;
+
+                case MOVE_LEFT:
+                    message = new ServerMessage(ServerMessageType.MOVE_LEFT,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
+                    lastAction = receivedMessage.getPacketOwner()+" move left...";
+                    break;
+
+                case MOVE_UP:
+                    message = new ServerMessage(ServerMessageType.MOVE_UP,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
+                    lastAction = receivedMessage.getPacketOwner()+" move up...";
+                    break;
+
+                case MOVE_DOWN:
+                    message = new ServerMessage(ServerMessageType.MOVE_DOWN,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
+                    lastAction = receivedMessage.getPacketOwner()+" move down...";
+                    break;
+
+                case PLACE_BOMB:
+                    message = new ServerMessage(ServerMessageType.PLACE_BOMB,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
+                    lastAction = receivedMessage.getPacketOwner()+" place bomb...";
+                    break;
+
+                case POWERUP:
+                    message = new ServerMessage(ServerMessageType.POWERUP,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
+                    lastAction = receivedMessage.getPacketOwner()+" power up...";
             }
+            responseClients(message, lastAction);
         }
     }
 
     public void send(Object obj, InetAddress address, int port) {
         ByteArrayOutputStream byteOS = new ByteArrayOutputStream();
         ObjectOutputStream objOS = null;
+
         try {
             objOS = new ObjectOutputStream(byteOS);
         } catch (IOException e) {
@@ -119,4 +167,10 @@ public class Server {
         }
     }
 
+    public void responseClients(ServerMessage message, String lastAction) {
+        for (ServerClient client : clients) {
+            send(message, client.getAddress(), client.getPort());
+            System.out.println(client.getAddress().getHostAddress()+":"+ client.getPort() +" -> "+lastAction);
+        }
+    }
 }
