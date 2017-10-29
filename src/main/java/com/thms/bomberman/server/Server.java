@@ -80,19 +80,37 @@ public class Server {
                 case CONNECTING:
                     InetAddress address = packet.getAddress();
                     int port = packet.getPort();
-                    lastAction = "Connect...";
-                    clients.add(new ServerClient(address, port));
-                    System.out.println("==============================");
-                    System.out.println("------------------------------");
-                    System.out.println("########Client Connect########");
-                    System.out.println("------------------------------");
-                    for (ServerClient client : clients) {
-                        System.out.println("-> "+client.getAddress().getHostAddress()+":"+client.getPort());
+                    if (clients.size() <= 4) {
+                        clients.add(new ServerClient(address, port, receivedMessage.getPacketOwner()));
+                        System.out.println("==============================");
+                        System.out.println("------------------------------");
+                        System.out.println("########Client Connect########");
+                        System.out.println("------------------------------");
+                        for (ServerClient client : clients) {
+                            System.out.println("-> "+client.getAddress().getHostAddress()+":"+client.getPort());
+                        }
+                        System.out.println("------------------------------");
+                        System.out.println("Client connected: "+clients.size());
+                        System.out.println("==============================");
+                        message = new ServerMessage(ServerMessageType.CONNECTING,
+                                receivedMessage.getPacketOwner(),
+                                receivedMessage.getData());
+                        lastAction = "Connected...";
                     }
-                    System.out.println("------------------------------");
-                    System.out.println("Client connected: "+clients.size());
-                    System.out.println("==============================");
                     break;
+
+//                case PLAYER_SPAWN:
+//                    String data = receivedMessage.getData();
+//                    if (!clients.isEmpty()) {
+//                        for (ServerClient client : clients) {
+//                            data += "/"+client.getClientOwner().toString();
+//                        }
+//                    }
+//                    message = new ServerMessage(ServerMessageType.PLAYER_SPAWN,
+//                            receivedMessage.getPacketOwner(),
+//                            receivedMessage.getData()+"/"+clients.size());
+//                    lastAction = receivedMessage.getPacketOwner()+" spawn...";
+//                    break;
 
                 case MOVE_RIGHT:
                     message = new ServerMessage(ServerMessageType.MOVE_RIGHT,
@@ -127,6 +145,12 @@ public class Server {
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
                     lastAction = receivedMessage.getPacketOwner()+" place bomb...";
+                    break;
+
+                case POWERUP_SPAWN:
+                    message = new ServerMessage(ServerMessageType.POWERUP_SPAWN,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
                     break;
 
                 case POWERUP:

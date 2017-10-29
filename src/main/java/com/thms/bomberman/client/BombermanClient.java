@@ -22,12 +22,10 @@ public class BombermanClient extends GameApplication {
     public static final int GAME_HEIGHT = 650;
     private Client client;
 
-    private BombermanType clientOwner = BombermanType.PLAYER1;
+    private int numOfPlayer; //หาทางรับ Input จาก Menu
+    private BombermanType clientOwner = BombermanType.PLAYER1; //หาทางรับ Input จาก Menu
     private GameEntity player1, player2, player3, player4;
-    private PlayerControl player1Control, player2Control, player3Control, player4Control;
-    private PlayerControl playerControl;
-
-    private BombermanType playerPowerUp = clientOwner;
+    public PlayerControl player1Control, player2Control, player3Control, player4Control;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -43,6 +41,11 @@ public class BombermanClient extends GameApplication {
     }
 
     @Override
+    protected void initUI() {
+
+    }
+
+    @Override
     protected void initGame() {
         initNetwork();
         TextLevelParser levelParser = new TextLevelParser(getGameWorld().getEntityFactory());
@@ -52,6 +55,7 @@ public class BombermanClient extends GameApplication {
         getGameWorld().setLevel(level);
         getGameWorld().spawn("BG");
 
+//        client.send(new ClientMessage(ClientMessageType.PLAYER_SPAWN, clientOwner, "PlayerSpawnPacket/"+numOfPlayer));
         player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
         player1Control = player1.getControl(PlayerControl.class);
 
@@ -63,21 +67,6 @@ public class BombermanClient extends GameApplication {
 
         player4 = (GameEntity) getGameWorld().spawn("Player4", 650, 550);
         player4Control = player4.getControl(PlayerControl.class);
-
-        switch (clientOwner) {
-            case PLAYER1:
-                playerControl = player1Control;
-                break;
-            case PLAYER2:
-                playerControl = player2Control;
-                break;
-            case PLAYER3:
-                playerControl = player3Control;
-                break;
-            case PLAYER4:
-                playerControl = player4Control;
-                break;
-        }
     }
 
     @Override
@@ -130,7 +119,7 @@ public class BombermanClient extends GameApplication {
         getPhysicsWorld().addCollisionHandler(new CollisionHandler(clientOwner, BombermanType.POWERUP) {
             @Override
             protected void onCollision(Entity pl, Entity powerup) {
-                client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "POWERUP"));
+                client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "PowerUpPacket"));
                 powerup.removeFromWorld();
             }
         });
@@ -138,10 +127,10 @@ public class BombermanClient extends GameApplication {
 
     public void onBrickDestroyed(Entity brick) {
         int random = FXGLMath.random(1, 100);
-        if (random <= 40) {
+        if (random <= 30) {
             int x = Entities.getPosition(brick).getGridX(TILE_SIZE);
             int y = Entities.getPosition(brick).getGridY(TILE_SIZE);
-            getGameWorld().spawn("PowerUp", (x*BombermanClient.TILE_SIZE)+5, (y*BombermanClient.TILE_SIZE)+5);
+            client.send(new ClientMessage(ClientMessageType.POWERUP_SPAWN, clientOwner, "PowerUpSpawnPacket/"+x+"/"+y));
         }
     }
 
@@ -158,7 +147,61 @@ public class BombermanClient extends GameApplication {
 
             switch (updateMessage.getHeader()) {
                 case CONNECTING:
+                    System.out.println("Server connected...");
                     break;
+
+//                case PLAYER_SPAWN:
+//                    String[] clients = updateMessage.getData().split("/");
+//                    if(clients.length == 2) numOfPlayer = Integer.parseInt(clients[1]);
+//                    switch (numOfPlayer) {
+//                        case 1:
+//                            player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                            player1Control = player1.getControl(PlayerControl.class);
+//                            break;
+//                        case 2:
+//                            player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                            player1Control = player1.getControl(PlayerControl.class);
+//                            player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+//                            player2Control = player2.getControl(PlayerControl.class);
+//                            break;
+//                        case 3:
+//                            player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                            player1Control = player1.getControl(PlayerControl.class);
+//                            player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+//                            player2Control = player2.getControl(PlayerControl.class);
+//                            player3 = (GameEntity) getGameWorld().spawn("Player3", 50, 550);
+//                            player3Control = player3.getControl(PlayerControl.class);
+//                            break;
+//                        case 4:
+//                            player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                            player1Control = player1.getControl(PlayerControl.class);
+//                            player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+//                            player2Control = player2.getControl(PlayerControl.class);
+//                            player3 = (GameEntity) getGameWorld().spawn("Player3", 50, 550);
+//                            player3Control = player3.getControl(PlayerControl.class);
+//                            player4 = (GameEntity) getGameWorld().spawn("Player4", 650, 550);
+//                            player4Control = player4.getControl(PlayerControl.class);
+//                            break;
+//                    }
+//                    switch (updateMessage.getPacketOwner()) {
+//                        case PLAYER1:
+//                            player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                            player1Control = player1.getControl(PlayerControl.class);
+//                            break;
+//                        case PLAYER2:
+//                            player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+//                            player2Control = player2.getControl(PlayerControl.class);
+//                            break;
+//                        case PLAYER3:
+//                            player3 = (GameEntity) getGameWorld().spawn("Player3", 50, 550);
+//                            player3Control = player3.getControl(PlayerControl.class);
+//                            break;
+//                        case PLAYER4:
+//                            player4 = (GameEntity) getGameWorld().spawn("Player4", 650, 550);
+//                            player4Control = player4.getControl(PlayerControl.class);
+//                            break;
+//                    }
+//                    break;
 
                 case MOVE_RIGHT:
                     switch (updateMessage.getPacketOwner()) {
@@ -265,38 +308,34 @@ public class BombermanClient extends GameApplication {
                     }
                     break;
 
+                case POWERUP_SPAWN:
+                    String[] data = updateMessage.getData().split("/");
+                    int x = Integer.parseInt(data[1]);
+                    int y = Integer.parseInt(data[2]);
+                    getGameWorld().spawn("PowerUp", (x*BombermanClient.TILE_SIZE)+5, (y*BombermanClient.TILE_SIZE)+5);
+                    break;
+
                 case POWERUP:
                     switch (updateMessage.getPacketOwner()) {
                         case PLAYER1:
-//                            playerPowerUp = BombermanType.PLAYER1;
                             setPowerUpPhysic(BombermanType.PLAYER1);
                             player1Control.increaseMaxBombs();
                             break;
                         case PLAYER2:
                             setPowerUpPhysic(BombermanType.PLAYER2);
-//                            playerPowerUp = BombermanType.PLAYER2;
                             player2Control.increaseMaxBombs();
                             break;
                         case PLAYER3:
                             setPowerUpPhysic(BombermanType.PLAYER3);
-//                            playerPowerUp = BombermanType.PLAYER3;
                             player3Control.increaseMaxBombs();
                             break;
                         case PLAYER4:
                             setPowerUpPhysic(BombermanType.PLAYER4);
-//                            playerPowerUp = BombermanType.PLAYER4;
                             player4Control.increaseMaxBombs();
                             break;
                     }
                     break;
             }
-//            getPhysicsWorld().addCollisionHandler(new CollisionHandler(playerPowerUp, BombermanType.POWERUP) {
-//                @Override
-//                protected void onCollision(Entity pl, Entity powerup) {
-//                    client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "POWERUP"));
-//                    powerup.removeFromWorld();
-//                }
-//            });
         }
     }
 
@@ -304,11 +343,43 @@ public class BombermanClient extends GameApplication {
         getPhysicsWorld().addCollisionHandler(new CollisionHandler(playerPowerup, BombermanType.POWERUP) {
             @Override
             protected void onCollision(Entity pl, Entity powerup) {
-                client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "POWERUP"));
                 powerup.removeFromWorld();
             }
         });
     }
+
+//    public void spawnPlayer(int numOfPlayer) {
+//        switch (numOfPlayer) {
+//            case 1:
+//                player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                player1Control = player1.getControl(PlayerControl.class);
+//                break;
+//            case 2:
+//                player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                player1Control = player1.getControl(PlayerControl.class);
+//                player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+//                player2Control = player2.getControl(PlayerControl.class);
+//                break;
+//            case 3:
+//                player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                player1Control = player1.getControl(PlayerControl.class);
+//                player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+//                player2Control = player2.getControl(PlayerControl.class);
+//                player3 = (GameEntity) getGameWorld().spawn("Player3", 50, 550);
+//                player3Control = player3.getControl(PlayerControl.class);
+//                break;
+//            case 4:
+//                player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
+//                player1Control = player1.getControl(PlayerControl.class);
+//                player2 = (GameEntity) getGameWorld().spawn("Player2", 650, 50);
+//                player2Control = player2.getControl(PlayerControl.class);
+//                player3 = (GameEntity) getGameWorld().spawn("Player3", 50, 550);
+//                player3Control = player3.getControl(PlayerControl.class);
+//                player4 = (GameEntity) getGameWorld().spawn("Player4", 650, 550);
+//                player4Control = player4.getControl(PlayerControl.class);
+//                break;
+//        }
+//    }
 
     public static void main(String[] args) {
         launch(args);

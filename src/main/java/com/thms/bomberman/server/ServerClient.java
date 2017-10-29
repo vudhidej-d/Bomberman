@@ -1,5 +1,7 @@
 package com.thms.bomberman.server;
 
+import com.thms.bomberman.client.BombermanType;
+
 import java.net.InetAddress;
 
 public class ServerClient {
@@ -8,12 +10,14 @@ public class ServerClient {
     private int userID;
     private InetAddress address;
     private int port;
+    private BombermanType clientOwner;
     private boolean status = false;
 
-    public ServerClient(InetAddress address, int port) {
+    public ServerClient(InetAddress address, int port, BombermanType clientOwner) {
 //        userID = userIDCounter;
         this.address = address;
         this.port = port;
+        this.clientOwner = clientOwner;
         status = true;
         userIDCounter++;
     }
@@ -25,7 +29,7 @@ public class ServerClient {
 
     @Override
     public String toString() {
-        return Integer.toString(userID);
+        return address.getHostAddress()+":"+port;
     }
 
     public int getUserID() {
@@ -58,5 +62,13 @@ public class ServerClient {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public BombermanType getClientOwner() {
+        return clientOwner;
+    }
+
+    public void setClientOwner(BombermanType clientOwner) {
+        this.clientOwner = clientOwner;
     }
 }
