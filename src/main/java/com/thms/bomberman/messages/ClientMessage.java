@@ -1,18 +1,20 @@
-package com.thms.bomberman.client;
+package com.thms.bomberman.messages;
+
+import com.thms.bomberman.client.BombermanType;
 
 import java.io.Serializable;
 
 public class ClientMessage implements Serializable {
-    private ClientMessageType header;
+    private ClientMessagePhrase header;
     private BombermanType packetOwner;
     private String data;
 
-    public ClientMessage(ClientMessageType header, String data) {
+    public ClientMessage(ClientMessagePhrase header, String data) {
         this.header = header;
         this.data = data;
     }
 
-    public ClientMessage(ClientMessageType header, BombermanType packetOwner, String data) {
+    public ClientMessage(ClientMessagePhrase header, BombermanType packetOwner, String data) {
         this.header = header;
         this.packetOwner = packetOwner;
         this.data = data;
@@ -23,11 +25,11 @@ public class ClientMessage implements Serializable {
         return "Request: "+header+"\nOwner: "+packetOwner+" -> "+data;
     }
 
-    public ClientMessageType getHeader() {
+    public ClientMessagePhrase getHeader() {
         return header;
     }
 
-    public void setHeader(ClientMessageType header) {
+    public void setHeader(ClientMessagePhrase header) {
         this.header = header;
     }
 

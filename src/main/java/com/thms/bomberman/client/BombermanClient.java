@@ -13,7 +13,9 @@ import com.almasb.fxgl.parser.text.TextLevelParser;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.settings.GameSettings;
 import com.thms.bomberman.client.controllers.PlayerControl;
-import com.thms.bomberman.server.ServerMessage;
+import com.thms.bomberman.messages.ClientMessage;
+import com.thms.bomberman.messages.ClientMessagePhrase;
+import com.thms.bomberman.messages.ServerMessage;
 import javafx.scene.input.KeyCode;
 
 public class BombermanClient extends GameApplication {
@@ -55,7 +57,7 @@ public class BombermanClient extends GameApplication {
         getGameWorld().setLevel(level);
         getGameWorld().spawn("BG");
 
-//        client.send(new ClientMessage(ClientMessageType.PLAYER_SPAWN, clientOwner, "PlayerSpawnPacket/"+numOfPlayer));
+//        client.send(new ClientMessage(ClientMessagePhrase.PLAYER_SPAWN, clientOwner, "PlayerSpawnPacket/"+numOfPlayer));
         player1 = (GameEntity) getGameWorld().spawn("Player1", 50, 50);
         player1Control = player1.getControl(PlayerControl.class);
 
@@ -76,7 +78,7 @@ public class BombermanClient extends GameApplication {
         input.addAction(new UserAction("Move_Right") {
             @Override
             protected void onActionBegin() {
-                client.send(new ClientMessage(ClientMessageType.MOVE_RIGHT, clientOwner,
+                client.send(new ClientMessage(ClientMessagePhrase.MOVE_RIGHT, clientOwner,
                         "MoveRightPacket"));
             }
         }, KeyCode.RIGHT);
@@ -84,7 +86,7 @@ public class BombermanClient extends GameApplication {
         input.addAction(new UserAction("Move_Left") {
             @Override
             protected void onActionBegin() {
-                client.send(new ClientMessage(ClientMessageType.MOVE_LEFT, clientOwner,
+                client.send(new ClientMessage(ClientMessagePhrase.MOVE_LEFT, clientOwner,
                         "MoveLeftPacket"));
             }
         }, KeyCode.LEFT);
@@ -92,7 +94,7 @@ public class BombermanClient extends GameApplication {
         input.addAction(new UserAction("Move_Up") {
             @Override
             protected void onActionBegin() {
-                client.send(new ClientMessage(ClientMessageType.MOVE_UP, clientOwner,
+                client.send(new ClientMessage(ClientMessagePhrase.MOVE_UP, clientOwner,
                         "MoveUpPacket"));
             }
         }, KeyCode.UP);
@@ -100,7 +102,7 @@ public class BombermanClient extends GameApplication {
         input.addAction(new UserAction("Move_Down") {
             @Override
             protected void onActionBegin() {
-                client.send(new ClientMessage(ClientMessageType.MOVE_DOWN, clientOwner,
+                client.send(new ClientMessage(ClientMessagePhrase.MOVE_DOWN, clientOwner,
                         "MoveDownPacket"));
             }
         }, KeyCode.DOWN);
@@ -108,7 +110,7 @@ public class BombermanClient extends GameApplication {
         input.addAction(new UserAction("Place_Bomb") {
             @Override
             protected void onActionBegin() {
-                client.send(new ClientMessage(ClientMessageType.PLACE_BOMB, clientOwner,
+                client.send(new ClientMessage(ClientMessagePhrase.PLACE_BOMB, clientOwner,
                         "PlaceBombPacket"));
             }
         }, KeyCode.SPACE);
@@ -119,7 +121,7 @@ public class BombermanClient extends GameApplication {
         getPhysicsWorld().addCollisionHandler(new CollisionHandler(clientOwner, BombermanType.POWERUP) {
             @Override
             protected void onCollision(Entity pl, Entity powerup) {
-                client.send(new ClientMessage(ClientMessageType.POWERUP, clientOwner, "PowerUpPacket"));
+                client.send(new ClientMessage(ClientMessagePhrase.POWERUP, clientOwner, "PowerUpPacket"));
                 powerup.removeFromWorld();
             }
         });
@@ -130,7 +132,7 @@ public class BombermanClient extends GameApplication {
         if (random <= 30) {
             int x = Entities.getPosition(brick).getGridX(TILE_SIZE);
             int y = Entities.getPosition(brick).getGridY(TILE_SIZE);
-            client.send(new ClientMessage(ClientMessageType.POWERUP_SPAWN, clientOwner, "PowerUpSpawnPacket/"+x+"/"+y));
+            client.send(new ClientMessage(ClientMessagePhrase.POWERUP_SPAWN, clientOwner, "PowerUpSpawnPacket/"+x+"/"+y));
         }
     }
 
@@ -142,12 +144,16 @@ public class BombermanClient extends GameApplication {
     @Override
     protected void onUpdate(double tpf) {
         if (!client.updateQueue.isEmpty()) {
-            System.out.println("Client has an update...");
+            System.out.println("\nClient has an update...");
             ServerMessage updateMessage = client.updateQueue.poll();
 
             switch (updateMessage.getHeader()) {
                 case CONNECTING:
-                    System.out.println("Server connected...");
+                    System.out.println(updateMessage.getData().split("/")[1]);
+                    break;
+
+                case DISCONNECTING:
+                    System.out.println(updateMessage.getData().split("/")[1]);
                     break;
 
 //                case PLAYER_SPAWN:

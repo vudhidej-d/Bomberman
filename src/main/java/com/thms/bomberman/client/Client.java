@@ -1,6 +1,8 @@
 package com.thms.bomberman.client;
 
-import com.thms.bomberman.server.ServerMessage;
+import com.thms.bomberman.messages.ClientMessage;
+import com.thms.bomberman.messages.ClientMessagePhrase;
+import com.thms.bomberman.messages.ServerMessage;
 
 import java.io.*;
 import java.net.*;
@@ -51,12 +53,11 @@ public class Client {
     }
 
     public void disconnect() {
-
+        send(new ClientMessage(ClientMessagePhrase.DISCONNECTING, "DisconnectionPacket"));
     }
 
     private void listen() {
         while (listening) {
-            System.out.println("Listening...");
             DatagramPacket packet = new DatagramPacket(receivedDataBuffer, MAX_PACKET_SIZE);
             try {
                 socket.receive(packet);
@@ -89,7 +90,7 @@ public class Client {
     }
 
     private void sendConnectionPacket() {
-        ClientMessage data = new ClientMessage(ClientMessageType.CONNECTING, "ConnectionPacket");
+        ClientMessage data = new ClientMessage(ClientMessagePhrase.CONNECTING, "ConnectionPacket");
         send(data);
     }
 

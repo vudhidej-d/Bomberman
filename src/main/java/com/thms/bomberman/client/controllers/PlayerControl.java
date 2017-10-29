@@ -20,7 +20,7 @@ public class PlayerControl extends Control {
     public void onUpdate(Entity entity, double v) {}
 
     public void increaseMaxBombs() {
-        if (maxBombs <= 5) maxBombs++;
+        if (maxBombs <= 3) maxBombs++;
     }
 
     public void placeBomb() {
