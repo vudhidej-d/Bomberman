@@ -7,7 +7,7 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.component.PositionComponent;
 import com.almasb.fxgl.entity.component.TypeComponent;
 import com.thms.bomberman.client.BombermanClient;
-import com.thms.bomberman.client.BombermanType;
+import com.thms.bomberman.messages.BombermanType;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
@@ -20,7 +20,7 @@ public class PlayerControl extends Control {
     public void onUpdate(Entity entity, double v) {}
 
     public void increaseMaxBombs() {
-        if (maxBombs <= 3) maxBombs++;
+        if (maxBombs < 5) maxBombs++;
     }
 
     public void placeBomb() {

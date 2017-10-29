@@ -8,7 +8,7 @@ import com.almasb.fxgl.entity.component.BoundingBoxComponent;
 import com.almasb.fxgl.entity.component.PositionComponent;
 import com.almasb.fxgl.entity.component.TypeComponent;
 import com.thms.bomberman.client.BombermanClient;
-import com.thms.bomberman.client.BombermanType;
+import com.thms.bomberman.messages.BombermanType;
 import javafx.geometry.Point2D;
 
 public class BombControl extends Control {

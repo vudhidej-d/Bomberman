@@ -24,8 +24,8 @@ public class Server {
 
     private Set<ServerClient> clients = new HashSet<ServerClient>();
 
-    ServerMessage message;
-    String lastAction;
+    private ServerMessage message;
+    private String lastAction;
 
     public Server(int port) {
         this.port = port;
@@ -77,12 +77,13 @@ public class Server {
 
         if (receivedObj instanceof ClientMessage) {
             ClientMessage receivedMessage = (ClientMessage) receivedObj;
+            System.out.println(receivedMessage);
 
             switch (receivedMessage.getHeader()) {
                 case CONNECTING:
                     InetAddress address = packet.getAddress();
                     int port = packet.getPort();
-                    if (clients.size() <= 4) {
+                    if (clients.size() < 4) {
                         clients.add(new ServerClient(address, port, receivedMessage.getPacketOwner()));
                         System.out.println("==============================");
                         System.out.println("------------------------------");
@@ -94,10 +95,15 @@ public class Server {
                         System.out.println("------------------------------");
                         System.out.println("Client connected: "+clients.size());
                         System.out.println("==============================");
-                        message = new ServerMessage(ServerMessagePhrase.CONNECTING,
+                        message = new ServerMessage(ServerMessagePhrase.CONNECTED,
                                 receivedMessage.getPacketOwner(),
-                                receivedMessage.getData()+"/Server connected...");
+                                receivedMessage.getData()+"/Server connected.../"+clients.size());
                         lastAction = "Connected...";
+                    } else {
+                        send(new ServerMessage(ServerMessagePhrase.DISCONNECTED,
+                                receivedMessage.getPacketOwner(),
+                                receivedMessage.getData()+"/Server disconnected..."),
+                                packet.getAddress(),packet.getPort());
                     }
                     break;
 
@@ -109,6 +115,7 @@ public class Server {
                     for (ServerClient client : clients) {
                          if (client.toString().equals(packet.getAddress().getHostAddress()+":"+packet.getPort())) {
                              clients.remove(client);
+                             break;
                          } else {
                              System.out.println("-> "+client.getAddress().getHostAddress()+":"+client.getPort());
                          }
@@ -116,68 +123,64 @@ public class Server {
                     System.out.println("------------------------------");
                     System.out.println("Client connected: "+clients.size());
                     System.out.println("==============================");
-                    message = new ServerMessage(ServerMessagePhrase.CONNECTING,
+                    message = new ServerMessage(ServerMessagePhrase.DISCONNECTED,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData()+"/Server disconnected...");
                     lastAction = "Disconnected...";
+                    send(message, packet.getAddress(), packet.getPort());
                     break;
 
-//                case PLAYER_SPAWN:
-//                    String data = receivedMessage.getData();
-//                    if (!clients.isEmpty()) {
-//                        for (ServerClient client : clients) {
-//                            data += "/"+client.getClientOwner().toString();
-//                        }
-//                    }
-//                    message = new ServerMessage(ServerMessagePhrase.PLAYER_SPAWN,
-//                            receivedMessage.getPacketOwner(),
-//                            receivedMessage.getData()+"/"+clients.size());
-//                    lastAction = receivedMessage.getPacketOwner()+" spawn...";
-//                    break;
+                case PLAYER_SPAWN:
+                    message = new ServerMessage(ServerMessagePhrase.PLAYER_SPAWNED,
+                            receivedMessage.getPacketOwner(),
+                            receivedMessage.getData());
+                    lastAction = "Player entities spawn...";
+                    break;
 
                 case MOVE_RIGHT:
-                    message = new ServerMessage(ServerMessagePhrase.MOVE_RIGHT,
+                    message = new ServerMessage(ServerMessagePhrase.MOVED_RIGHT,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
                     lastAction = receivedMessage.getPacketOwner()+" move right...";
                     break;
 
                 case MOVE_LEFT:
-                    message = new ServerMessage(ServerMessagePhrase.MOVE_LEFT,
+                    message = new ServerMessage(ServerMessagePhrase.MOVED_LEFT,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
                     lastAction = receivedMessage.getPacketOwner()+" move left...";
                     break;
 
                 case MOVE_UP:
-                    message = new ServerMessage(ServerMessagePhrase.MOVE_UP,
+                    message = new ServerMessage(ServerMessagePhrase.MOVED_UP,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
                     lastAction = receivedMessage.getPacketOwner()+" move up...";
                     break;
 
                 case MOVE_DOWN:
-                    message = new ServerMessage(ServerMessagePhrase.MOVE_DOWN,
+                    message = new ServerMessage(ServerMessagePhrase.MOVED_DOWN,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
                     lastAction = receivedMessage.getPacketOwner()+" move down...";
                     break;
 
                 case PLACE_BOMB:
-                    message = new ServerMessage(ServerMessagePhrase.PLACE_BOMB,
+                    message = new ServerMessage(ServerMessagePhrase.PLACED_BOMB,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
                     lastAction = receivedMessage.getPacketOwner()+" place bomb...";
                     break;
 
                 case POWERUP_SPAWN:
-                    message = new ServerMessage(ServerMessagePhrase.POWERUP_SPAWN,
+                    message = new ServerMessage(ServerMessagePhrase.POWER_UP_SPAWNED,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
+                    lastAction = receivedMessage.getPacketOwner()+" client spawn power up...";
                     break;
 
                 case POWERUP:
-                    message = new ServerMessage(ServerMessagePhrase.POWERUP,
+                    message = new ServerMessage(ServerMessagePhrase.POWERED_UP,
                             receivedMessage.getPacketOwner(),
                             receivedMessage.getData());
                     lastAction = receivedMessage.getPacketOwner()+" power up...";
@@ -215,9 +218,11 @@ public class Server {
     }
 
     public void responseClients(ServerMessage message, String lastAction) {
-        for (ServerClient client : clients) {
-            send(message, client.getAddress(), client.getPort());
-            System.out.println(client.getAddress().getHostAddress()+":"+ client.getPort() +" -> "+lastAction);
+        if (!message.getHeader().equals(ServerMessagePhrase.DISCONNECTED)) {
+            for (ServerClient client : clients) {
+                send(message, client.getAddress(), client.getPort());
+                System.out.println(client.getAddress().getHostAddress()+":"+ client.getPort() +" -> "+lastAction);
+            }
         }
     }
 }

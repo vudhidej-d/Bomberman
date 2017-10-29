@@ -16,7 +16,8 @@ public class Client {
 
     private DatagramSocket socket;
     private Thread listenThread;
-    private boolean listening;
+    private boolean listening = false;
+    private boolean isConnect = false;
 
     private final int MAX_PACKET_SIZE = 1024;
     private byte[] sendedDataBuffer = new byte[MAX_PACKET_SIZE*10];

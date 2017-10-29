@@ -7,6 +7,7 @@ import com.almasb.fxgl.entity.*;
 import com.almasb.fxgl.entity.component.CollidableComponent;
 import com.thms.bomberman.client.controllers.BombControl;
 import com.thms.bomberman.client.controllers.PlayerControl;
+import com.thms.bomberman.messages.BombermanType;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -50,7 +51,7 @@ public class BombermanFactory implements TextEntityFactory {
         return Entities.builder()
                 .type(BombermanType.PLAYER3)
                 .from(data)
-                .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.BROWN))
+                .viewFromNodeWithBBox(new Rectangle(blockWidth(), blockHeight(), Color.SADDLEBROWN))
                 .with(new CollidableComponent(true))
                 .with(new PlayerControl())
                 .build();

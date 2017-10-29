@@ -1,7 +1,5 @@
 package com.thms.bomberman.messages;
 
-import com.thms.bomberman.client.BombermanType;
-
 import java.io.Serializable;
 
 public class ClientMessage implements Serializable {
@@ -22,30 +20,18 @@ public class ClientMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "Request: "+header+"\nOwner: "+packetOwner+" -> "+data;
+        return "Request: "+header;
     }
 
     public ClientMessagePhrase getHeader() {
         return header;
     }
 
-    public void setHeader(ClientMessagePhrase header) {
-        this.header = header;
-    }
-
     public BombermanType getPacketOwner() {
         return packetOwner;
     }
 
-    public void setPacketOwner(BombermanType packetOwner) {
-        this.packetOwner = packetOwner;
-    }
-
     public String getData() {
         return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 }
