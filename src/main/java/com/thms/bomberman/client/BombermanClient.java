@@ -1,3 +1,5 @@
+//5810401040 Vudhidej Dejmul
+
 package com.thms.bomberman.client;
 
 import com.almasb.fxgl.app.ApplicationMode;
@@ -20,7 +22,6 @@ public class BombermanClient extends GameApplication {
     public static final int TILE_SIZE = 50;
     public static final int GAME_WIDTH = 750;
     public static final int GAME_HEIGHT = 650;
-    public static String hostIP;
     private Client client;
 
     private int numOfPlayer = 0;
@@ -110,7 +111,7 @@ public class BombermanClient extends GameApplication {
     }
 
     protected void initNetwork() {
-        client = new Client(hostIP, 21488);
+        client = new Client("localhost", 21488);
         client.connect();
     }
 
@@ -395,6 +396,5 @@ public class BombermanClient extends GameApplication {
 
     public static void main(String[] args) {
         launch(args);
-        hostIP = args[3];
     }
 }
